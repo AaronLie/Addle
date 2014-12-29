@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -27,6 +28,7 @@ namespace Addle.Wpf.ViewModel
 			where T : class
 		{
 			var vmType = typeof(T);
+			//TODO: need to perform more verification on vmType
 			if (vmType.IsNotPublic) throw new ArgumentException("vmToWrap must be public", "vmToWrap");
 
 			var fieldDescriptions = _typeFieldDescriptions.TryGetValue(typeof(T));
@@ -65,25 +67,37 @@ namespace Addle.Wpf.ViewModel
 
 			var codeProvider = new CSharpCodeProvider();
 			var compilerParameters = new CompilerParameters
-				{
-					GenerateInMemory = true,
+			{
+				GenerateInMemory = true,
 #if DEBUG
-					IncludeDebugInformation = true,
+				IncludeDebugInformation = true,
 #endif
+			};
+
+			var assembliesToAdd = new List<string>
+				{
+					"Microsoft.CSharp.dll",
+					"System.dll",
+					"System.Core.dll",
+					typeof(AutoVMFactory).Assembly.Location,
+					typeof(EnumerableExtensions).Assembly.Location,
+					typeof(T).Assembly.Location
 				};
-			compilerParameters.ReferencedAssemblies.Add("Core.dll");
-			compilerParameters.ReferencedAssemblies.Add("Microsoft.CSharp.dll");
-			compilerParameters.ReferencedAssemblies.Add("System.dll");
-			compilerParameters.ReferencedAssemblies.Add("System.Core.dll");
-			compilerParameters.ReferencedAssemblies.Add(Assembly.GetCallingAssembly().Location);
-			compilerParameters.ReferencedAssemblies.Add(typeof(T).Assembly.Location);
+			compilerParameters.ReferencedAssemblies.AddRange(assembliesToAdd.ToArray());
 
 			var results = codeProvider.CompileAssemblyFromSource(compilerParameters, text);
 
-			//TODO: need to perform verification on T, make sure it's public, for example
+			if (results.Errors.Count > 0)
+			{
+				throw new Exception(results.Errors[0].ToString());
+			}
+
 			var generatedType = results.CompiledAssembly.GetTypes().Single(a => a.Name.Equals(className));
 
-			var result = generatedType.GetConstructor(new[] { typeof(T) }).Invoke(new object[] { vmToWrap });
+			var constructor = generatedType.GetConstructors().Single();
+			Debug.Assert(constructor != null, "Constructor not found for {0}({1})".FormatWith(generatedType.Name, typeof(T).Name));
+
+			var result = constructor.Invoke(new object[] { vmToWrap });
 			return (IViewModel<T>)result;
 		}
 

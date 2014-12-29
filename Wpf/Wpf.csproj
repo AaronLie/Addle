@@ -70,6 +70,7 @@
     <Compile Include="ActionCommand.cs" />
     <Compile Include="Linq\DispatcherExtensions.cs" />
     <Compile Include="ViewModel\AutoCommand.cs" />
+    <Compile Include="ViewModel\AutoDesignInstance.cs" />
     <Compile Include="ViewModel\AutoProperty.cs" />
     <Compile Include="ViewModel\AutoVMFactory.cs" />
     <Compile Include="ViewModel\AutoVMGenerator-Code.cs" />
