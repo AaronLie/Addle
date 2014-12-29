@@ -1,0 +1,65 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" visibility="internal" #>
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows.Input;
+using Addle.Core.Linq;
+using Addle.Wpf.ViewModel;
+using JetBrains.Annotations;
+
+namespace Addle.Wpf.ViewModel.Generated
+{
+	class <#= _className #> : IViewModel<<#= _wrappedClassName #>>, IGeneratedViewModel, INotifyPropertyChanged
+	{
+		readonly <#= _wrappedClassName #> _value;
+		IAutoVMFactoryValueProvider _valueProvider;
+
+		public <#= _className #>(<#= _wrappedClassName #> value)
+		{
+			_value = value;
+		}
+
+		void IGeneratedViewModel.Initialize(IAutoVMFactoryValueProvider valueProvider, IEnumerable<INotifyPropertyChanged> notifiers)
+		{
+			_valueProvider = valueProvider;
+			notifiers.ForEach(a => a.PropertyChanged += OnPropertyChanged);
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
+		{
+			var handler = PropertyChanged;
+
+			if (handler != null)
+			{
+				handler.Invoke(sender, args);
+			}
+		}
+
+		<#= _wrappedClassName #> IViewModel<<#= _wrappedClassName #>>.Value { get { return _value; } }
+
+<#
+		foreach (var fieldDescription in _fieldDescriptions)
+		{
+			var propertyType = GetPropertyType(fieldDescription);
+			var propertyName = fieldDescription.PropertyName;
+
+			if (fieldDescription.Attribute.IsWritable)
+			{
+#>
+		public <#= propertyType #> <#= propertyName #> { get { return _valueProvider.GetValue<<#=propertyType#>>(); } set { _valueProvider.SetValue(value); } }
+<#
+			}
+			else
+			{
+#>
+		public <#= propertyType #> <#= propertyName #> { get { return _valueProvider.GetValue<<#=propertyType#>>(); } }
+<#
+			}
+		}
+#>
+	}
+}
