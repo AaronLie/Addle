@@ -40,5 +40,24 @@ namespace Addle.Core.Linq
 				action(item);
 			}
 		}
+
+		public static IEnumerable<T> Concat<T>(this IEnumerable<T> @this, T other)
+		{
+			return @this.Concat(EnumerableEx.Return(other));
+		}
+
+		// ReSharper disable once InconsistentNaming
+		public static bool IContains(this IEnumerable<string> @this, string other)
+		{
+			return @this.Any(a => a.IEquals(other));
+		}
+	}
+
+	public static class EnumerableEx
+	{
+		public static IEnumerable<T> Return<T>(T @this)
+		{
+			yield return @this;
+		}
 	}
 }
