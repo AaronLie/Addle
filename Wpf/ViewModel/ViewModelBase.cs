@@ -12,8 +12,7 @@ namespace Addle.Wpf.ViewModel
 
 		void OnPropertyChanged(string propertyName)
 		{
-			PropertyChangedEventHandler handler = PropertyChanged;
-			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		protected void SetProperty<T>(ref T property, T value, Action<T> callback = null, [CallerMemberName] string name = null)
@@ -27,10 +26,7 @@ namespace Addle.Wpf.ViewModel
 
 			property = value;
 
-			if (callback != null)
-			{
-				callback(value);
-			}
+			callback?.Invoke(value);
 
 			OnPropertyChanged(name);
 		}

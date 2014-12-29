@@ -29,10 +29,7 @@ namespace Addle.Core.Transactions
 			_setValue(_storedValue);
 			_storedValue = oldValue;
 
-			if (_propertyChanged != null)
-			{
-				_propertyChanged();
-			}
+			_propertyChanged?.Invoke();
 		}
 
 		void IActionDescriptor.Undo()
@@ -42,10 +39,7 @@ namespace Addle.Core.Transactions
 			_setValue(_storedValue);
 			_storedValue = oldValue;
 
-			if (_propertyChanged != null)
-			{
-				_propertyChanged();
-			}
+			_propertyChanged?.Invoke();
 		}
 	}
 }

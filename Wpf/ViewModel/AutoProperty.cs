@@ -38,8 +38,7 @@ namespace Addle.Wpf.ViewModel
 
 		void OnPropertyChanged(string propertyName)
 		{
-			var handler = _propertyChanged;
-			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+			_propertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		void SetProperty(ref T property, T value)
@@ -92,8 +91,7 @@ namespace Addle.Wpf.ViewModel
 
 		void OnPropertyChanged(string propertyName)
 		{
-			var handler = _propertyChanged;
-			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+			_propertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		void SetProperty(ref T property, T value, Action<TOwner, T> callback = null)
@@ -102,10 +100,7 @@ namespace Addle.Wpf.ViewModel
 
 			property = value;
 
-			if (callback != null)
-			{
-				callback((TOwner)_owner, value);
-			}
+			callback?.Invoke((TOwner)_owner, value);
 
 			OnPropertyChanged(_propertyName);
 		}

@@ -17,10 +17,7 @@ namespace Addle.Wpf
 			_execute = execute;
 			_canExecute = canExecute;
 
-			if (canExecuteChanged != null)
-			{
-				canExecuteChanged.Subscribe(_ => OnCanExecuteChanged());
-			}
+			canExecuteChanged?.Subscribe(_ => OnCanExecuteChanged());
 		}
 
 		public bool CanExecute(object parameter)
@@ -38,7 +35,7 @@ namespace Addle.Wpf
 		protected void OnCanExecuteChanged()
 		{
 			var handler = CanExecuteChanged;
-			if (handler != null) handler(this, new EventArgs());
+			handler?.Invoke(this, new EventArgs());
 		}
 	}
 }
