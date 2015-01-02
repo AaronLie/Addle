@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using Addle.Core.Linq;
 using JetBrains.Annotations;
 
@@ -21,21 +22,25 @@ namespace Addle.Wpf.ViewModel
 
 		static string GetPropertyType(FieldDescription fieldDescription)
 		{
-			string result;
+			var type = fieldDescription.Attribute.OverrideType;
 
-			if (fieldDescription.IsAutoProperty)
+			if (type == null)
 			{
-                result = ConvertGenericTypeName(fieldDescription.FieldInfo.FieldType.GenericTypeArguments.Last());
-			}
-			else if (fieldDescription.IsAutoCommand)
-			{
-				result = "System.Windows.Input.ICommand";
-			}
-			else
-			{
-				result = ConvertGenericTypeName(fieldDescription.FieldInfo.FieldType);
+				if (fieldDescription.IsAutoProperty)
+				{
+					type = fieldDescription.FieldInfo.FieldType.GenericTypeArguments.Last();
+				}
+				else if (fieldDescription.IsAutoCommand)
+				{
+					type = typeof(ICommand);
+				}
+				else
+				{
+					type = fieldDescription.FieldInfo.FieldType;
+                }
 			}
 
+			var result = ConvertGenericTypeName(type);
 			return result;
 		}
 

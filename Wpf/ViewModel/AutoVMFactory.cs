@@ -41,7 +41,7 @@ namespace Addle.Wpf.ViewModel
 			var fieldDescriptions = GetFieldDescriptions(vmType);
 			var generatedType = GenerateType(vmType, fieldDescriptions.Values);
 
-			var constructor = generatedType.GetConstructors().Single();
+			var constructor = generatedType.GetConstructors().Single(a => a.GetParameters().Length == 1);
 			Debug.Assert(constructor != null, "Constructor not found for {0}({1})".FormatWith(generatedType.Name, vmType.Name));
 
 			var result = constructor.Invoke(new object[] { vmToWrap });
@@ -65,12 +65,13 @@ namespace Addle.Wpf.ViewModel
 
 			if (fieldDescriptions == null)
 			{
-				var fieldDescriptionValues = from fieldInfo in vmType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-											 let attr = fieldInfo.GetCustomAttribute<VMPropertyAttribute>()
-											 where attr != null
-											 let trimmed = fieldInfo.Name.TrimStart('_')
-											 let propertyName = trimmed.Substring(0, 1).ToUpperInvariant() + trimmed.Substring(1)
-											 select new FieldDescription(propertyName, fieldInfo, attr);
+				var fieldDescriptionValues =
+					from fieldInfo in vmType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+					let attr = fieldInfo.GetCustomAttribute<VMPropertyAttribute>()
+					where attr != null
+					let trimmed = fieldInfo.Name.TrimStart('_')
+					let propertyName = trimmed.Substring(0, 1).ToUpperInvariant() + trimmed.Substring(1)
+					select new FieldDescription(propertyName, fieldInfo, attr);
 				fieldDescriptions = fieldDescriptionValues.ToDictionary(a => a.PropertyName, a => a);
 				_typeFieldDescriptions[vmType] = fieldDescriptions;
 			}
@@ -104,7 +105,7 @@ namespace Addle.Wpf.ViewModel
 					typeof(AutoVMFactory).Assembly.Location,
 					typeof(EnumerableExtensions).Assembly.Location,
 					typeof(DesignTimeValueProvider).Assembly.Location,
-                    vmType.Assembly.Location
+					vmType.Assembly.Location
 				};
 			compilerParameters.ReferencedAssemblies.AddRange(assembliesToAdd.ToArray());
 

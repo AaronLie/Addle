@@ -21,12 +21,10 @@ namespace Addle.Wpf.ViewModel
 			{
 				result = (T)Convert.ChangeType(3, typeof(T));
 			}
-
-			//TODO: This won't work, the cast to T isn't valid
-			//else if (typeof(IEnumerable<string>).IsAssignableFrom(typeof(T)))
-			//{
-			//	result = (T)(object)new[] { "hi", "bye", "how" };
-			//}
+			else if (typeof(IEnumerable<string>).IsAssignableFrom(typeof(T)))
+			{
+				result = (T)(object)new[] { "hi", "bye", "how" };
+			}
 
 			return result;
 		}
