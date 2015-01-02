@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,13 +16,7 @@ namespace Addle.Wpf.ViewModel
 		{
 			if (Type == null) return null;
 
-			var instance = Type.GetConstructor(Type.EmptyTypes).Invoke(null);
-
-			var method = typeof(AutoVMFactory).GetMethod("Wrap");
-			method = method.MakeGenericMethod(Type);
-
-			var generated = method.Invoke(null, new[] { instance });
-			return generated;
+			return AutoVMFactory.MakeType(Type);
 		}
 	}
 }

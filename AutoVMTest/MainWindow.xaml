@@ -5,9 +5,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:viewModel="clr-namespace:Addle.Wpf.ViewModel;assembly=WpfStuff"
+    xmlns:viewModel="clr-namespace:Addle.Wpf.ViewModel;assembly=Addle.Wpf"
     xmlns:autoVmTest="clr-namespace:Addle.AutoVMTest"
-    d:DataContext="{viewModel:AutoDesignInstance Type={x:Type autoVmTest:MainWindowVM}}">
+    d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True, Type={viewModel:AutoDesignInstance Type={x:Type autoVmTest:MainWindowVM}}}">
     <DockPanel>
         <TextBlock Text="{Binding Name}" DockPanel.Dock="Top" />
         <Slider Maximum="10" Value="{Binding Count}" DockPanel.Dock="Top" />

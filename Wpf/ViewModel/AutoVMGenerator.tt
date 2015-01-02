@@ -16,6 +16,12 @@ namespace Addle.Wpf.ViewModel.Generated
 		readonly <#= _wrappedClassName #> _value;
 		IAutoVMFactoryValueProvider _valueProvider;
 
+		// for use in design time
+		public <#= _className #>()
+		{
+			_valueProvider = new DesignTimeValueProvider();
+		}
+
 		public <#= _className #>(<#= _wrappedClassName #> value)
 		{
 			_value = value;
