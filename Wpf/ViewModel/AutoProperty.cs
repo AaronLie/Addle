@@ -68,6 +68,12 @@ namespace Addle.Wpf.ViewModel
 			_valueChangedCallback = valueChangedCallback;
 		}
 
+		public AutoProperty(T value = default(T), Action<TOwner> valueChangedCallback = null)
+		{
+			_value = value;
+			_valueChangedCallback = (owner, _) => valueChangedCallback(owner);
+		}
+
 		void IAutoPropertyInternal.Setup(object owner, string propertyName)
 		{
 			_owner = owner;
