@@ -19,7 +19,6 @@ namespace Addle.Wpf.ViewModel.Generated
 		// for use in design time
 		public <#= _className #>()
 		{
-			_valueProvider = new DesignTimeValueProvider();
 		}
 
 		public <#= _className #>(<#= _wrappedClassName #> value)
@@ -38,31 +37,43 @@ namespace Addle.Wpf.ViewModel.Generated
 		void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
 		{
 			var handler = PropertyChanged;
-
+			
 			if (handler != null)
 			{
 				handler.Invoke(sender, args);
 			}
 		}
-
+		
 		<#= _wrappedClassName #> IViewModel<<#= _wrappedClassName #>>.Value { get { return _value; } }
 
 <#
 		foreach (var fieldDescription in _fieldDescriptions)
 		{
 			var propertyType = GetPropertyType(fieldDescription);
+			var propertyTypeName = ConvertTypeNameToString(propertyType);
 			var propertyName = fieldDescription.PropertyName;
 
-			if (fieldDescription.Attribute.IsWritable)
+			if (!_isDesignTime)
 			{
+				if (fieldDescription.Attribute.IsWritable)
+				{
 #>
-		public <#= propertyType #> <#= propertyName #> { get { return _valueProvider.GetValue<<#=propertyType#>>(); } set { _valueProvider.SetValue(value); } }
+		public <#=propertyTypeName#> <#=propertyName#> { get { return _valueProvider.GetValue<<#=propertyTypeName#>>(); } set { _valueProvider.SetValue(value); } }
 <#
+				}
+				else
+				{
+#>
+		public <#=propertyTypeName#> <#=propertyName#> { get { return _valueProvider.GetValue<<#=propertyTypeName#>>(); } }
+<#
+				}
 			}
 			else
 			{
+				// if we're in design time, override the type, if needed
+				propertyTypeName = ConvertTypeNameToString(AutoVMDesignTimeHelper.GetDesignTimeType(propertyType));
 #>
-		public <#= propertyType #> <#= propertyName #> { get { return _valueProvider.GetValue<<#=propertyType#>>(); } }
+		public <#=propertyTypeName#> <#=propertyName#> { get { return AutoVMDesignTimeHelper.GetDesignTimeValue<<#=propertyTypeName#>>("<#=propertyName#>"); } set { } }	
 <#
 			}
 		}

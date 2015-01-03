@@ -1,15 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Addle.Wpf.ViewModel
 {
-	public class DesignTimeValueProvider : IAutoVMFactoryValueProvider
+	public static class AutoVMDesignTimeHelper
 	{
-		T IAutoVMFactoryValueProvider.GetValue<T>(string fieldName)
+		public static Type GetDesignTimeType(Type type)
+		{
+			var result = type;
+
+			if (typeof(IEnumerable<string>).IsAssignableFrom(type))
+			{
+				result = typeof(IEnumerable<string>);
+			}
+
+			return result;
+		}
+
+		public static T GetDesignTimeValue<T>(string fieldName)
 		{
 			var result = default(T);
 
@@ -27,10 +37,6 @@ namespace Addle.Wpf.ViewModel
 			}
 
 			return result;
-		}
-
-		void IAutoVMFactoryValueProvider.SetValue<T>(T value, string fieldName)
-		{
 		}
 	}
 }

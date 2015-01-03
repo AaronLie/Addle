@@ -20,7 +20,7 @@ namespace Addle.AutoVMTest
 			@this._removeItemCommand.CanExecute.OnNext(@this._strings.Count > 0);
 		});
 
-		[VMProperty(OverrideType = typeof(IEnumerable<string>))]
+		[VMProperty]
 		readonly ObservableCollection<string> _strings = new ObservableCollection<string>();
 
 		[VMProperty]
