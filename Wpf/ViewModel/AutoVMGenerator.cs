@@ -25,6 +25,12 @@ namespace Addle.Wpf.ViewModel
         /// </summary>
         public virtual string TransformText()
         {
+            
+            #line 2 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+// ReSharper disable All
+            
+            #line default
+            #line hidden
             this.Write(@"using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -39,21 +45,21 @@ namespace Addle.Wpf.ViewModel.Generated
 {
 	class ");
             
-            #line 14 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 15 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_className));
             
             #line default
             #line hidden
             this.Write(" : IViewModel<");
             
-            #line 14 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 15 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_wrappedClassName));
             
             #line default
             #line hidden
             this.Write(">, IGeneratedViewModel, INotifyPropertyChanged\r\n\t{\r\n\t\treadonly ");
             
-            #line 16 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 17 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_wrappedClassName));
             
             #line default
@@ -61,21 +67,21 @@ namespace Addle.Wpf.ViewModel.Generated
             this.Write(" _value;\r\n\t\tIAutoVMFactoryValueProvider _valueProvider;\r\n\r\n\t\t// for use in design" +
                     " time\r\n\t\tpublic ");
             
-            #line 20 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 21 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_className));
             
             #line default
             #line hidden
             this.Write("()\r\n\t\t{\r\n\t\t}\r\n\r\n\t\tpublic ");
             
-            #line 24 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 25 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_className));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 24 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 25 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_wrappedClassName));
             
             #line default
@@ -105,21 +111,21 @@ namespace Addle.Wpf.ViewModel.Generated
 		
 		");
             
-            #line 47 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 48 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_wrappedClassName));
             
             #line default
             #line hidden
             this.Write(" IViewModel<");
             
-            #line 47 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 48 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_wrappedClassName));
             
             #line default
             #line hidden
             this.Write(">.Value { get { return _value; } }\r\n\r\n");
             
-            #line 49 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 50 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
 
 		foreach (var fieldDescription in _fieldDescriptions)
 		{
@@ -137,28 +143,28 @@ namespace Addle.Wpf.ViewModel.Generated
             #line hidden
             this.Write("\t\tpublic ");
             
-            #line 61 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 62 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyTypeName));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 61 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 62 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyName));
             
             #line default
             #line hidden
             this.Write(" { get { return _valueProvider.GetValue<");
             
-            #line 61 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 62 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyTypeName));
             
             #line default
             #line hidden
             this.Write(">(); } set { _valueProvider.SetValue(value); } }\r\n");
             
-            #line 62 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 63 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
 
 				}
 				else
@@ -169,28 +175,28 @@ namespace Addle.Wpf.ViewModel.Generated
             #line hidden
             this.Write("\t\tpublic ");
             
-            #line 67 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 68 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyTypeName));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 67 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 68 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyName));
             
             #line default
             #line hidden
             this.Write(" { get { return _valueProvider.GetValue<");
             
-            #line 67 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 68 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyTypeName));
             
             #line default
             #line hidden
             this.Write(">(); } }\r\n");
             
-            #line 68 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 69 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
 
 				}
 			}
@@ -198,42 +204,93 @@ namespace Addle.Wpf.ViewModel.Generated
 			{
 				// if we're in design time, override the type, if needed
 				propertyTypeName = ConvertTypeNameToString(AutoVMDesignTimeHelper.GetDesignTimeType(propertyType));
+				
+				if (fieldDescription.Attribute.DesignTime != null)
+				{
+					var designTimeValue = fieldDescription.Attribute.DesignTime;
 
             
             #line default
             #line hidden
             this.Write("\t\tpublic ");
             
-            #line 76 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 81 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyTypeName));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 76 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 81 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyName));
             
             #line default
             #line hidden
-            this.Write(" { get { return AutoVMDesignTimeHelper.GetDesignTimeValue<");
+            this.Write(" { get { return AutoVMDesignTimeHelper.GetDesignTimeOverride<");
             
-            #line 76 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 81 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(_wrappedClassName));
+            
+            #line default
+            #line hidden
+            this.Write(", ");
+            
+            #line 81 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyTypeName));
             
             #line default
             #line hidden
             this.Write(">(\"");
             
-            #line 76 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 81 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldDescription.FieldInfo.Name));
+            
+            #line default
+            #line hidden
+            this.Write("\"); } set { } }\r\n");
+            
+            #line 82 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+
+				}
+				else
+				{
+
+            
+            #line default
+            #line hidden
+            this.Write("\t\tpublic ");
+            
+            #line 87 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(propertyTypeName));
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 87 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyName));
             
             #line default
             #line hidden
-            this.Write("\"); } set { } }\t\r\n");
+            this.Write(" { get { return AutoVMDesignTimeHelper.GetDesignTimeValue<");
             
-            #line 77 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            #line 87 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(propertyTypeName));
+            
+            #line default
+            #line hidden
+            this.Write(">(\"");
+            
+            #line 87 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(propertyName));
+            
+            #line default
+            #line hidden
+            this.Write("\"); } set { } }\r\n");
+            
+            #line 88 "D:\Projects\Git-Addle\Wpf\ViewModel\AutoVMGenerator.tt"
 
+				}
 			}
 		}
 

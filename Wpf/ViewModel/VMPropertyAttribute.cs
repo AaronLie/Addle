@@ -11,5 +11,8 @@ namespace Addle.Wpf.ViewModel
 	{
 		/// <summary>If this is true, then a property setter is also generated. Default is false.</summary>
 		public bool IsWritable { get; set; }
+
+		/// <summary>Override the value that's used at design time.</summary>
+		public object DesignTime { get; set; }
 	}
 }
