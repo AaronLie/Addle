@@ -23,12 +23,12 @@ namespace Addle.Wpf.ViewModel
 			return Wrap(new T());
 		}
 
-		public static Type MakeType(Type vmType)
+		public static Type MakeTypeForDesignTime(Type vmType)
 		{
 			ValidateType(vmType);
 
 			var fieldDescriptions = GetFieldDescriptions(vmType);
-			var generatedType = GenerateType(vmType, fieldDescriptions.Values);
+			var generatedType = GenerateType(true, vmType, fieldDescriptions.Values);
 			return generatedType;
 		}
 
@@ -39,9 +39,9 @@ namespace Addle.Wpf.ViewModel
 			ValidateType(vmType);
 
 			var fieldDescriptions = GetFieldDescriptions(vmType);
-			var generatedType = GenerateType(vmType, fieldDescriptions.Values);
+			var generatedType = GenerateType(false, vmType, fieldDescriptions.Values);
 
-			var constructor = generatedType.GetConstructors().Single();
+			var constructor = generatedType.GetConstructors().Single(a => a.GetParameters().Length == 1);
 			Debug.Assert(constructor != null, "Constructor not found for {0}({1})".FormatWith(generatedType.Name, vmType.Name));
 
 			var result = constructor.Invoke(new object[] { vmToWrap });
@@ -65,12 +65,13 @@ namespace Addle.Wpf.ViewModel
 
 			if (fieldDescriptions == null)
 			{
-				var fieldDescriptionValues = from fieldInfo in vmType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-											 let attr = fieldInfo.GetCustomAttribute<VMPropertyAttribute>()
-											 where attr != null
-											 let trimmed = fieldInfo.Name.TrimStart('_')
-											 let propertyName = trimmed.Substring(0, 1).ToUpperInvariant() + trimmed.Substring(1)
-											 select new FieldDescription(propertyName, fieldInfo, attr);
+				var fieldDescriptionValues =
+					from fieldInfo in vmType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+					let attr = fieldInfo.GetCustomAttribute<VMPropertyAttribute>()
+					where attr != null
+					let trimmed = fieldInfo.Name.TrimStart('_')
+					let propertyName = trimmed.Substring(0, 1).ToUpperInvariant() + trimmed.Substring(1)
+					select new FieldDescription(propertyName, fieldInfo, attr);
 				fieldDescriptions = fieldDescriptionValues.ToDictionary(a => a.PropertyName, a => a);
 				_typeFieldDescriptions[vmType] = fieldDescriptions;
 			}
@@ -78,13 +79,13 @@ namespace Addle.Wpf.ViewModel
 			return fieldDescriptions;
 		}
 
-		static Type GenerateType(Type vmType, IEnumerable<FieldDescription> values)
+		static Type GenerateType(bool isDesignTime, Type vmType, IEnumerable<FieldDescription> values)
 		{
 			var increment = Interlocked.Increment(ref _randomIncrement);
 			var random = new Random();
 			var className = "Gen_{0}_{1}_{2}".FormatWith(vmType.Name, random.Next(0, int.MaxValue), increment);
 
-			var generator = new AutoVMGenerator(className, vmType.FullName, values);
+			var generator = new AutoVMGenerator(className, vmType.FullName, values, isDesignTime);
 			var text = generator.TransformText();
 
 			var codeProvider = new CSharpCodeProvider();
@@ -103,8 +104,8 @@ namespace Addle.Wpf.ViewModel
 					"System.Core.dll",
 					typeof(AutoVMFactory).Assembly.Location,
 					typeof(EnumerableExtensions).Assembly.Location,
-					typeof(DesignTimeValueProvider).Assembly.Location,
-                    vmType.Assembly.Location
+					typeof(AutoVMDesignTimeHelper).Assembly.Location,
+					vmType.Assembly.Location
 				};
 			compilerParameters.ReferencedAssemblies.AddRange(assembliesToAdd.ToArray());
 
@@ -119,7 +120,7 @@ namespace Addle.Wpf.ViewModel
 			return generatedType;
 		}
 
-		static void SetupGenerated<T>(IGeneratedViewModel generated, T vmToWrap, ValueProvider valueProvider, ICollection<FieldDescription> fieldDescriptions)
+		static void SetupGenerated<T>(IGeneratedViewModel generated, T vmToWrap, IAutoVMFactoryValueProvider valueProvider, ICollection<FieldDescription> fieldDescriptions)
 		{
 			var autoCommands = (
 				from fieldInfo in fieldDescriptions

@@ -16,7 +16,7 @@ namespace Addle.Wpf.ViewModel
 		{
 			if (Type == null) return null;
 
-			return AutoVMFactory.MakeType(Type);
+			return AutoVMFactory.MakeTypeForDesignTime(Type);
 		}
 	}
 }

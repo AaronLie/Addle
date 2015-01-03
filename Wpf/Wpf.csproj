@@ -79,7 +79,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AutoVMGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\DesignTimeValueProvider.cs" />
+    <Compile Include="ViewModel\AutoVMDesignTimeHelper.cs" />
     <Compile Include="ViewModel\IAutoPropertyInternal.cs" />
     <Compile Include="ViewModel\IViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
