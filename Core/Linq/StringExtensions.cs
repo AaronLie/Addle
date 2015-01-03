@@ -17,11 +17,17 @@ namespace Addle.Core.Linq
 		}
 
 		[DebuggerNonUserCode]
-		// ReSharper disable InconsistentNaming
+		// ReSharper disable once InconsistentNaming
 		public static bool IEquals(this string a, string b)
-		// ReSharper restore InconsistentNaming
 		{
 			return a.Equals(b, StringComparison.OrdinalIgnoreCase);
+		}
+
+		[DebuggerNonUserCode]
+		// ReSharper disable once InconsistentNaming
+		public static bool IContains(this string a, string b)
+		{
+			return a.IndexOf(b, StringComparison.OrdinalIgnoreCase) != -1;
 		}
 	}
 }

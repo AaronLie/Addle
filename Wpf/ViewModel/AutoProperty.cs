@@ -7,8 +7,12 @@ using JetBrains.Annotations;
 
 namespace Addle.Wpf.ViewModel
 {
-	[UsedImplicitly]
-	public class AutoProperty<T> : IAutoPropertyInternal
+	public interface IAutoProperty<T>
+	{
+		T Value { get; set; }
+	}
+
+	public class AutoProperty<T> : IAutoProperty<T>, IAutoPropertyInternal
 	{
 		event PropertyChangedEventHandler _propertyChanged;
 		T _value;
@@ -49,7 +53,7 @@ namespace Addle.Wpf.ViewModel
 		}
 	}
 
-	public class AutoProperty<TOwner, T> : IAutoPropertyInternal
+	public class AutoProperty<TOwner, T> : IAutoProperty<T>, IAutoPropertyInternal
 	{
 		readonly Action<TOwner, T> _valueChangedCallback;
 		event PropertyChangedEventHandler _propertyChanged;
@@ -61,6 +65,12 @@ namespace Addle.Wpf.ViewModel
 		{
 			_value = value;
 			_valueChangedCallback = valueChangedCallback;
+		}
+
+		public AutoProperty(T value = default(T), Action<TOwner> valueChangedCallback = null)
+		{
+			_value = value;
+			_valueChangedCallback = (owner, _) => valueChangedCallback(owner);
 		}
 
 		void IAutoPropertyInternal.Setup(object owner, string propertyName)
