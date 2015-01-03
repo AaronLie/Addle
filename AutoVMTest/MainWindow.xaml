@@ -21,10 +21,10 @@
 				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding LeftItems}" SelectedIndex="{Binding LeftSelectedIndex}" />
-			<ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding RightItems}" SelectedIndex="{Binding RightSelectedIndex}" />
-			<Button Grid.Row="1" Grid.Column="0" Command="{Binding MoveRightCommand}" Content="Move right" />
-			<Button Grid.Row="1" Grid.Column="1" Command="{Binding MoveLeftCommand}" Content="Move left" />
+			<ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Left.Items}" SelectedIndex="{Binding Left.SelectedIndex}" />
+			<ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Right.Items}" SelectedIndex="{Binding Right.SelectedIndex}" />
+			<Button Grid.Row="1" Grid.Column="0" Command="{Binding Left.MoveCommand}" Content="Move right" />
+			<Button Grid.Row="1" Grid.Column="1" Command="{Binding Right.MoveCommand}" Content="Move left" />
 		</Grid>
 	</DockPanel>
 </Window>
