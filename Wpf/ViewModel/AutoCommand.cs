@@ -9,7 +9,12 @@ using JetBrains.Annotations;
 
 namespace Addle.Wpf.ViewModel
 {
-	public class AutoCommand<TOwner, TParam> : IAutoCommandInternal, ICommand
+	public interface IAutoCommand
+	{
+		BehaviorSubject<bool> CanExecute { get; }
+	}
+
+    public class AutoCommand<TOwner, TParam> : IAutoCommand, IAutoCommandInternal, ICommand
 	{
 		readonly Action<TOwner, TParam> _executeCallback;
 		readonly BehaviorSubject<bool> _canExecute = new BehaviorSubject<bool>(true);

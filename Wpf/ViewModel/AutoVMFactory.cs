@@ -109,6 +109,8 @@ namespace Addle.Wpf.ViewModel
 				};
 			compilerParameters.ReferencedAssemblies.AddRange(assembliesToAdd.ToArray());
 
+			//System.IO.File.WriteAllText(@"c:\users\aaron\desktop\a.txt", text);
+			
 			var results = codeProvider.CompileAssemblyFromSource(compilerParameters, text);
 
 			if (results.Errors.Count > 0)
