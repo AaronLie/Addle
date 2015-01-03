@@ -1,13 +1,15 @@
-﻿using System;
+﻿//#define DEBUG_AUTOVMFACTORY
+
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Addle.Core.Linq;
-using JetBrains.Annotations;
 using Microsoft.CSharp;
 
 namespace Addle.Wpf.ViewModel
@@ -23,71 +25,109 @@ namespace Addle.Wpf.ViewModel
 			return Wrap(new T());
 		}
 
+		public static Type MakeTypeForDesignTime(Type vmType)
+		{
+			ValidateType(vmType);
+
+			var fieldDescriptions = GetFieldDescriptions(vmType);
+			var generatedType = GenerateType(true, vmType, fieldDescriptions.Values);
+			return generatedType;
+		}
+
 		public static IViewModel<T> Wrap<T>(T vmToWrap)
 			where T : class
 		{
 			var vmType = typeof(T);
-			if (vmType.IsNotPublic) throw new ArgumentException("vmToWrap must be public", "vmToWrap");
+			ValidateType(vmType);
 
-			var fieldDescriptions = _typeFieldDescriptions.TryGetValue(typeof(T));
+			var fieldDescriptions = GetFieldDescriptions(vmType);
+			var generatedType = GenerateType(false, vmType, fieldDescriptions.Values);
+
+			var constructor = generatedType.GetConstructors().Single(a => a.GetParameters().Length == 1);
+			Debug.Assert(constructor != null, "Constructor not found for {0}({1})".FormatWith(generatedType.Name, vmType.Name));
+
+			var result = constructor.Invoke(new object[] { vmToWrap });
+
+			var generated = (IGeneratedViewModel)result;
+			var valueProvider = new ValueProvider(fieldDescriptions, vmToWrap);
+			SetupGenerated(generated, vmToWrap, valueProvider, fieldDescriptions.Values);
+
+			return (IViewModel<T>)result;
+		}
+
+		static void ValidateType(Type vmType)
+		{
+			//TODO: need to perform more verification on vmType
+			if (vmType.IsNotPublic) throw new ArgumentException("vmType must be public", "vmType");
+		}
+
+		static IDictionary<string, FieldDescription> GetFieldDescriptions(Type vmType)
+		{
+			var fieldDescriptions = _typeFieldDescriptions.TryGetValue(vmType);
 
 			if (fieldDescriptions == null)
 			{
 				var fieldDescriptionValues =
-					from fieldInfo in typeof(T).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+					from fieldInfo in vmType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
 					let attr = fieldInfo.GetCustomAttribute<VMPropertyAttribute>()
 					where attr != null
 					let trimmed = fieldInfo.Name.TrimStart('_')
 					let propertyName = trimmed.Substring(0, 1).ToUpperInvariant() + trimmed.Substring(1)
 					select new FieldDescription(propertyName, fieldInfo, attr);
 				fieldDescriptions = fieldDescriptionValues.ToDictionary(a => a.PropertyName, a => a);
-				_typeFieldDescriptions[typeof(T)] = fieldDescriptions;
+				_typeFieldDescriptions[vmType] = fieldDescriptions;
 			}
 
-			var result = Generate(vmToWrap, fieldDescriptions.Values);
-
-			// ReSharper disable once SuspiciousTypeConversion.Global
-			var generated = (IGeneratedViewModel)result;
-			var valueProvider = new ValueProvider(fieldDescriptions, vmToWrap);
-			SetupGenerated(generated, vmToWrap, valueProvider, fieldDescriptions.Values);
-
-			return result;
+			return fieldDescriptions;
 		}
 
-		static IViewModel<T> Generate<T>(T vmToWrap, IEnumerable<FieldDescription> values)
+		static Type GenerateType(bool isDesignTime, Type vmType, IEnumerable<FieldDescription> values)
 		{
 			var increment = Interlocked.Increment(ref _randomIncrement);
 			var random = new Random();
-			var className = "Gen_{0}_{1}_{2}".FormatWith(typeof(T).Name, random.Next(0, int.MaxValue), increment);
+			var className = "Gen_{0}_{1}_{2}".FormatWith(vmType.Name, random.Next(0, int.MaxValue), increment);
 
-			var generator = new AutoVMGenerator(className, typeof(T).FullName, values);
+			var generator = new AutoVMGenerator(className, vmType.FullName, values, isDesignTime);
 			var text = generator.TransformText();
 
 			var codeProvider = new CSharpCodeProvider();
 			var compilerParameters = new CompilerParameters
-				{
-					GenerateInMemory = true,
+			{
+				GenerateInMemory = true,
 #if DEBUG
-					IncludeDebugInformation = true,
+				IncludeDebugInformation = true,
 #endif
+			};
+
+			var assembliesToAdd = new List<string>
+				{
+					"Microsoft.CSharp.dll",
+					"System.dll",
+					"System.Core.dll",
+					typeof(AutoVMFactory).Assembly.Location,
+					typeof(EnumerableExtensions).Assembly.Location,
+					typeof(AutoVMDesignTimeHelper).Assembly.Location,
+					vmType.Assembly.Location
 				};
-			compilerParameters.ReferencedAssemblies.Add("Core.dll");
-			compilerParameters.ReferencedAssemblies.Add("Microsoft.CSharp.dll");
-			compilerParameters.ReferencedAssemblies.Add("System.dll");
-			compilerParameters.ReferencedAssemblies.Add("System.Core.dll");
-			compilerParameters.ReferencedAssemblies.Add(Assembly.GetCallingAssembly().Location);
-			compilerParameters.ReferencedAssemblies.Add(typeof(T).Assembly.Location);
+			compilerParameters.ReferencedAssemblies.AddRange(assembliesToAdd.ToArray());
+
+#if DEBUG_AUTOVMFACTORY
+			var tempFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "autovmfactory-generated.txt");
+            System.IO.File.WriteAllText(tempFile, text);
+#endif
 
 			var results = codeProvider.CompileAssemblyFromSource(compilerParameters, text);
 
-			//TODO: need to perform verification on T, make sure it's public, for example
-			var generatedType = results.CompiledAssembly.GetTypes().Single(a => a.Name.Equals(className));
+			if (results.Errors.Count > 0)
+			{
+				throw new Exception(results.Errors[0].ToString());
+			}
 
-			var result = generatedType.GetConstructor(new[] { typeof(T) }).Invoke(new object[] { vmToWrap });
-			return (IViewModel<T>)result;
+			var generatedType = results.CompiledAssembly.GetTypes().Single(a => a.Name.Equals(className));
+			return generatedType;
 		}
 
-		static void SetupGenerated<T>(IGeneratedViewModel generated, T vmToWrap, ValueProvider valueProvider, ICollection<FieldDescription> fieldDescriptions)
+		static void SetupGenerated<T>(IGeneratedViewModel generated, T vmToWrap, IAutoVMFactoryValueProvider valueProvider, ICollection<FieldDescription> fieldDescriptions)
 		{
 			var autoCommands = (
 				from fieldInfo in fieldDescriptions
@@ -114,7 +154,7 @@ namespace Addle.Wpf.ViewModel
 			generated.Initialize(valueProvider, autoProperties.Select(a => a.AutoProperty));
 		}
 
-		#region class ValueProvider
+#region class ValueProvider
 
 		sealed class ValueProvider : IAutoVMFactoryValueProvider
 		{
@@ -170,10 +210,10 @@ namespace Addle.Wpf.ViewModel
 			}
 		}
 
-		#endregion
+#endregion
 	}
 
-	#region class FieldDescription
+#region class FieldDescription
 
 	sealed class FieldDescription
 	{
@@ -193,7 +233,7 @@ namespace Addle.Wpf.ViewModel
 		public bool IsAutoProperty { get; private set; }
 	}
 
-	#endregion
+#endregion
 
 	public interface IAutoVMFactoryValueProvider
 	{

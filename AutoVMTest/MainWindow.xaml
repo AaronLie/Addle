@@ -1,12 +1,30 @@
 ﻿<Window x:Class="Addle.AutoVMTest.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="MainWindow" Height="350" Width="525">
+    Title="MainWindow" Height="350" Width="525"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:viewModel="clr-namespace:Addle.Wpf.ViewModel;assembly=Addle.Wpf"
+    xmlns:autoVmTest="clr-namespace:Addle.AutoVMTest"
+    d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True, Type={viewModel:AutoDesignInstance Type={x:Type autoVmTest:MainWindowVM}}}">
 	<DockPanel>
 		<TextBlock Text="{Binding Name}" DockPanel.Dock="Top" />
 		<Slider Maximum="10" Value="{Binding Count}" DockPanel.Dock="Top" />
 		<TextBox Text="{Binding Count}" DockPanel.Dock="Top" />
-		<Button Command="{Binding RemoveItemCommand}" DockPanel.Dock="Bottom" Content="Remove item" />
-		<ListBox ItemsSource="{Binding Strings}" />
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding LeftItems}" SelectedIndex="{Binding LeftSelectedIndex}" />
+			<ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding RightItems}" SelectedIndex="{Binding RightSelectedIndex}" />
+			<Button Grid.Row="1" Grid.Column="0" Command="{Binding MoveRightCommand}" Content="Move right" />
+			<Button Grid.Row="1" Grid.Column="1" Command="{Binding MoveLeftCommand}" Content="Move left" />
+		</Grid>
 	</DockPanel>
 </Window>
