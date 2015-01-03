@@ -13,7 +13,7 @@ namespace Addle.AutoVMTest
 		[VMProperty]
 		readonly AutoProperty<string> _name = new AutoProperty<string>("Woohoo!");
 
-		[VMProperty(IsWritable = true)]
+		[VMProperty(IsWritable = true, DesignTime = "4")]
 		readonly AutoProperty<MainWindowVM, int> _count = new AutoProperty<MainWindowVM, int>(3, (@this, value) =>
 		{
 			@this._leftItems.SetRange(Enumerable.Range(0, value).Select(a => "foo-" + a));
@@ -25,7 +25,7 @@ namespace Addle.AutoVMTest
 		[VMProperty]
 		readonly ObservableCollection<string> _leftItems = new ObservableCollection<string>();
 
-		[VMProperty(IsWritable = true)]
+		[VMProperty(IsWritable = true, DesignTime = -1)]
 		readonly AutoProperty<MainWindowVM, int> _leftSelectedIndex = new AutoProperty<MainWindowVM, int>(-1, (@this, value) =>
 		{
 			@this.UpdateCanExecute();
@@ -38,10 +38,10 @@ namespace Addle.AutoVMTest
 			@this.UpdateCanExecute();
 		});
 
-		[VMProperty]
+		[VMProperty(DesignTime = new[] { "a right item" })]
 		readonly ObservableCollection<string> _rightItems = new ObservableCollection<string>();
 
-		[VMProperty(IsWritable = true)]
+		[VMProperty(IsWritable = true, DesignTime = -1)]
 		readonly AutoProperty<MainWindowVM, int> _rightSelectedIndex = new AutoProperty<MainWindowVM, int>(-1, (@this, value) =>
 		{
 			@this.UpdateCanExecute();

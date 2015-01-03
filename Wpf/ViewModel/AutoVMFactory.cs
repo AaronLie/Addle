@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define DEBUG_AUTOVMFACTORY
+
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -109,8 +111,11 @@ namespace Addle.Wpf.ViewModel
 				};
 			compilerParameters.ReferencedAssemblies.AddRange(assembliesToAdd.ToArray());
 
-			//System.IO.File.WriteAllText(@"c:\users\aaron\desktop\a.txt", text);
-			
+#if DEBUG_AUTOVMFACTORY
+			var tempFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "autovmfactory-generated.txt");
+            System.IO.File.WriteAllText(tempFile, text);
+#endif
+
 			var results = codeProvider.CompileAssemblyFromSource(compilerParameters, text);
 
 			if (results.Errors.Count > 0)
@@ -149,7 +154,7 @@ namespace Addle.Wpf.ViewModel
 			generated.Initialize(valueProvider, autoProperties.Select(a => a.AutoProperty));
 		}
 
-		#region class ValueProvider
+#region class ValueProvider
 
 		sealed class ValueProvider : IAutoVMFactoryValueProvider
 		{
@@ -205,10 +210,10 @@ namespace Addle.Wpf.ViewModel
 			}
 		}
 
-		#endregion
+#endregion
 	}
 
-	#region class FieldDescription
+#region class FieldDescription
 
 	sealed class FieldDescription
 	{
@@ -228,7 +233,7 @@ namespace Addle.Wpf.ViewModel
 		public bool IsAutoProperty { get; private set; }
 	}
 
-	#endregion
+#endregion
 
 	public interface IAutoVMFactoryValueProvider
 	{

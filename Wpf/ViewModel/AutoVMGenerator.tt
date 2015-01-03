@@ -1,4 +1,5 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" visibility="internal" #>
+<#// ReSharper disable All#>
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -72,9 +73,20 @@ namespace Addle.Wpf.ViewModel.Generated
 			{
 				// if we're in design time, override the type, if needed
 				propertyTypeName = ConvertTypeNameToString(AutoVMDesignTimeHelper.GetDesignTimeType(propertyType));
+				
+				if (fieldDescription.Attribute.DesignTime != null)
+				{
+					var designTimeValue = fieldDescription.Attribute.DesignTime;
 #>
-		public <#=propertyTypeName#> <#=propertyName#> { get { return AutoVMDesignTimeHelper.GetDesignTimeValue<<#=propertyTypeName#>>("<#=propertyName#>"); } set { } }	
+		public <#=propertyTypeName#> <#=propertyName#> { get { return AutoVMDesignTimeHelper.GetDesignTimeOverride<<#=_wrappedClassName#>, <#=propertyTypeName#>>("<#=fieldDescription.FieldInfo.Name#>"); } set { } }
 <#
+				}
+				else
+				{
+#>
+		public <#=propertyTypeName#> <#=propertyName#> { get { return AutoVMDesignTimeHelper.GetDesignTimeValue<<#=propertyTypeName#>>("<#=propertyName#>"); } set { } }
+<#
+				}
 			}
 		}
 #>
