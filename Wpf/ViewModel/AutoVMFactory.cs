@@ -36,10 +36,10 @@ namespace Addle.Wpf.ViewModel
 		static readonly ConcurrentDictionary<Type, CachedType> _generatedTypes = new ConcurrentDictionary<Type, CachedType>();
 		static int _randomIncrement;
 
-		public static IViewModel<T> Create<T>()
-			where T : class, new()
+		public static IViewModel<T> Create<T>(bool isDesignTime = false)
+			where T : new()
 		{
-			return Wrap(new T());
+			return Wrap(new T(), isDesignTime);
 		}
 
 		public static Type MakeTypeForDesignTime(Type vmType)
@@ -48,20 +48,19 @@ namespace Addle.Wpf.ViewModel
 
 			Type generatedType;
 			IDictionary<string, FieldDescription> fieldDescriptions;
-			LookupOrGenerateType(vmType, out generatedType, out fieldDescriptions);
+			LookupOrGenerateType(true, vmType, out generatedType, out fieldDescriptions);
 
 			return generatedType;
 		}
 
-		public static IViewModel<T> Wrap<T>(T vmToWrap)
-			where T : class
+		public static IViewModel<T> Wrap<T>(T vmToWrap, bool isDesignTime = false)
 		{
 			var vmType = typeof(T);
 			ValidateType(vmType);
 
 			Type generatedType;
 			IDictionary<string, FieldDescription> fieldDescriptions;
-			LookupOrGenerateType(vmType, out generatedType, out fieldDescriptions);
+			LookupOrGenerateType(isDesignTime, vmType, out generatedType, out fieldDescriptions);
 
 			var constructor = generatedType.GetConstructors().Single(a => a.GetParameters().Length == 1);
 			Debug.Assert(constructor != null, "Constructor not found for {0}({1})".FormatWith(generatedType.Name, vmType.Name));
@@ -75,7 +74,7 @@ namespace Addle.Wpf.ViewModel
 			return (IViewModel<T>)result;
 		}
 
-		static void LookupOrGenerateType(Type vmType, out Type generatedType, out IDictionary<string, FieldDescription> fieldDescriptions)
+		static void LookupOrGenerateType(bool isDesignTime, Type vmType, out Type generatedType, out IDictionary<string, FieldDescription> fieldDescriptions)
 		{
 			var cachedType = _generatedTypes.TryGetValue(vmType);
 
@@ -87,7 +86,7 @@ namespace Addle.Wpf.ViewModel
 			else
 			{
 				fieldDescriptions = GetFieldDescriptions(vmType);
-				generatedType = GenerateType(false, vmType, fieldDescriptions.Values);
+				generatedType = GenerateType(isDesignTime, vmType, fieldDescriptions.Values);
 				_generatedTypes[vmType] = new CachedType(generatedType, fieldDescriptions);
 			}
 		}
@@ -145,9 +144,10 @@ namespace Addle.Wpf.ViewModel
 #if DEBUG_AUTOVMFACTORY
 			var tempFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "autovmfactory-generated.txt");
             System.IO.File.WriteAllText(tempFile, text);
-#endif
-
+			var results = codeProvider.CompileAssemblyFromFile(compilerParameters, tempFile);
+#else
 			var results = codeProvider.CompileAssemblyFromSource(compilerParameters, text);
+#endif
 
 			if (results.Errors.Count > 0)
 			{

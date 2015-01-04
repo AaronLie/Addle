@@ -13,7 +13,7 @@ namespace Addle.AutoVMTest
 		[VMProperty]
 		readonly AutoProperty<string> _name = new AutoProperty<string>("Woohoo!");
 
-		[VMProperty(IsWritable = true, DesignTime = "4")]
+		[VMProperty(IsWritable = true, DesignTime = 4)]
 		readonly AutoProperty<MainWindowVM, int> _count = new AutoProperty<MainWindowVM, int>(3, (@this, value) =>
 		{
 			@this._left.Value.SetRange(Enumerable.Range(0, value).Select(a => "foo-" + a));
