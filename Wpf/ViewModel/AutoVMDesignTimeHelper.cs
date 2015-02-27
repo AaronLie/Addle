@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
@@ -39,6 +39,30 @@ namespace Addle.Wpf.ViewModel
 			{
 				result = (T)(object)new[] { "hi", "bye", "how" };
 			}
+			else if (typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(IViewModel<>))
+			{
+				var vmType = typeof(T).GetGenericArguments().Single();
+				var generatedType = AutoVMFactory.MakeTypeForDesignTime(vmType);
+
+				result = (T)ConstructIfPossible(generatedType);
+			}
+			else if (typeof(T).IsClass)
+			{
+				result = (T)ConstructIfPossible(typeof(T));
+			}
+
+			return result;
+		}
+
+		static object ConstructIfPossible(Type type)
+		{
+			object result = null;
+			var constructor = type.GetConstructor(Type.EmptyTypes);
+
+			if (constructor != null)
+			{
+				result = constructor.Invoke(null);
+			}
 
 			return result;
 		}
@@ -53,13 +77,14 @@ namespace Addle.Wpf.ViewModel
 			{
 				var attribute = field.GetCustomAttribute<VMPropertyAttribute>();
 
-				if (attribute != null)
+				if (attribute != null && attribute.DesignTime != null)
 				{
-					try
+					// ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
+					if (attribute.DesignTime is TResult)
 					{
 						result = (TResult)attribute.DesignTime;
 					}
-					catch
+					else
 					{
 						try
 						{
@@ -85,7 +110,9 @@ namespace Addle.Wpf.ViewModel
 		}
 
 		[StringFormatMethod("message")]
+		// ReSharper disable UnusedParameter.Local
 		static void ReportError(string message, params object[] args)
+		// ReSharper restore UnusedParameter.Local
 		{
 #if DEBUG_AUTOVMFACTORY_DESIGNTIMELOG
 			var tempFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "autovmfactory-designtimeerrors.txt");

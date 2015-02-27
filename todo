@@ -2,4 +2,5 @@ AutoVM
 - performance
 - cache generated vm types
 - child vms + use in examples
-
+- il generate
+- extract some of the tt stuff to baseclass
