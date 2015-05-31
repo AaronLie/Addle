@@ -27,8 +27,8 @@ namespace Addle.Wpf.ViewModel
 				FieldDescriptions = fieldDescriptions;
 			}
 
-			public Type GeneratedType { get; private set; }
-			public IDictionary<string, FieldDescription> FieldDescriptions { get; private set; }
+			public Type GeneratedType { get; }
+			public IDictionary<string, FieldDescription> FieldDescriptions { get; }
 		}
 
 		#endregion
