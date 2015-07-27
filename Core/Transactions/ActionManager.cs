@@ -15,9 +15,9 @@ namespace Addle.Core.Transactions
 		readonly Stack<IActionDescriptor> _redoStack = new Stack<IActionDescriptor>();
 		readonly Subject<Unit> _undoRedoChanged = new Subject<Unit>();
 
-		public bool CanUndo { get { return _undoStack.Any(); } }
-		public bool CanRedo { get { return _redoStack.Any(); } }
-		public IObservable<Unit> UndoRedoChanged { get { return _undoRedoChanged; } }
+		public bool CanUndo => _undoStack.Any();
+		public bool CanRedo => _redoStack.Any();
+		public IObservable<Unit> UndoRedoChanged => _undoRedoChanged;
 
 		public void DoAction(IActionDescriptor descriptor)
 		{

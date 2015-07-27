@@ -41,10 +41,7 @@ namespace Addle.Core.Linq
 			{
 				var observer = _observer.TryGetTarget();
 
-				if (observer != null)
-				{
-					observer.OnError(error);
-				}
+				observer?.OnError(error);
 			}
 
 			public void OnNext(T value)

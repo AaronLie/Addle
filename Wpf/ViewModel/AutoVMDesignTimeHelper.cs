@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
@@ -77,7 +76,7 @@ namespace Addle.Wpf.ViewModel
 			{
 				var attribute = field.GetCustomAttribute<VMPropertyAttribute>();
 
-				if (attribute != null && attribute.DesignTime != null)
+				if (attribute?.DesignTime != null)
 				{
 					// ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
 					if (attribute.DesignTime is TResult)

@@ -17,14 +17,13 @@ namespace Addle.Wpf.ViewModel
     public class AutoCommand<TOwner, TParam> : IAutoCommand, IAutoCommandInternal, ICommand
 	{
 		readonly Action<TOwner, TParam> _executeCallback;
-		readonly BehaviorSubject<bool> _canExecute = new BehaviorSubject<bool>(true);
-		event EventHandler _canExecuteChanged;
+	    event EventHandler _canExecuteChanged;
 		object _owner;
 
 		public AutoCommand(Action<TOwner, TParam> executeCallback)
 		{
 			_executeCallback = executeCallback;
-			_canExecute.Subscribe(OnCanExecuteChanged);
+			CanExecute.Subscribe(OnCanExecuteChanged);
 		}
 
 		public AutoCommand(Action<TOwner> executeCallback)
@@ -32,9 +31,9 @@ namespace Addle.Wpf.ViewModel
 		{
 		}
 
-		public BehaviorSubject<bool> CanExecute { get { return _canExecute; } }
+		public BehaviorSubject<bool> CanExecute { get; } = new BehaviorSubject<bool>(true);
 
-		void IAutoCommandInternal.Setup(object owner, string propertyName)
+	    void IAutoCommandInternal.Setup(object owner, string propertyName)
 		{
 			_owner = owner;
 		}
@@ -45,7 +44,7 @@ namespace Addle.Wpf.ViewModel
 
 		bool ICommand.CanExecute(object parameter)
 		{
-			return _canExecute == null || _canExecute.Value;
+			return CanExecute == null || CanExecute.Value;
 		}
 
 		void ICommand.Execute(object parameter)

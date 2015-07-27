@@ -56,6 +56,6 @@ namespace Addle.AutoVMTest
 			UpdateCanExecute();
 		}
 
-		public IObservable<string> ItemMoved { get { return _itemMoved; } }
+		public IObservable<string> ItemMoved => _itemMoved;
 	}
 }
