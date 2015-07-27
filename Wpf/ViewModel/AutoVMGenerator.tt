@@ -37,14 +37,12 @@ namespace Addle.Wpf.ViewModel.Generated
 
 		void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
 		{
-			var handler = PropertyChanged;
-			
-			if (handler != null)
+			if (PropertyChanged != null)
 			{
-				handler.Invoke(sender, args);
+				PropertyChanged.Invoke(sender, args);
 			}
 		}
-		
+
 		<#= _wrappedClassName #> IViewModel<<#= _wrappedClassName #>>.Value { get { return _value; } }
 
 <#

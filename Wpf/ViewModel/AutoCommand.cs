@@ -55,8 +55,7 @@ namespace Addle.Wpf.ViewModel
 
 		void OnCanExecuteChanged(bool value)
 		{
-			var handler = _canExecuteChanged;
-			if (handler != null) handler(this, new EventArgs());
+			_canExecuteChanged?.Invoke(this, new EventArgs());
 		}
 
 		event EventHandler ICommand.CanExecuteChanged { add { _canExecuteChanged += value; } remove { _canExecuteChanged -= value; } }

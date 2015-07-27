@@ -27,8 +27,8 @@ namespace Addle.Wpf.ViewModel
 				FieldDescriptions = fieldDescriptions;
 			}
 
-			public Type GeneratedType { get; private set; }
-			public IDictionary<string, FieldDescription> FieldDescriptions { get; private set; }
+			public Type GeneratedType { get; }
+			public IDictionary<string, FieldDescription> FieldDescriptions { get; }
 		}
 
 		#endregion
@@ -257,11 +257,11 @@ namespace Addle.Wpf.ViewModel
 			PropertyName = propertyName;
 		}
 
-		public string PropertyName { get; private set; }
-		public FieldInfo FieldInfo { get; private set; }
-		public VMPropertyAttribute Attribute { get; private set; }
-		public bool IsAutoCommand { get; private set; }
-		public bool IsAutoProperty { get; private set; }
+		public string PropertyName { get; }
+		public FieldInfo FieldInfo { get; }
+		public VMPropertyAttribute Attribute { get; }
+		public bool IsAutoCommand { get; }
+		public bool IsAutoProperty { get; }
 	}
 
 	#endregion

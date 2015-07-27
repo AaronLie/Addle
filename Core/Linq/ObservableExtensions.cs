@@ -34,11 +34,7 @@ namespace Addle.Core.Linq
 			public void OnCompleted()
 			{
 				var observer = _observer.TryGetTarget();
-
-				if (observer != null)
-				{
-					observer.OnCompleted();
-				}
+				observer?.OnCompleted();
 			}
 
 			public void OnError(Exception error)
@@ -54,11 +50,7 @@ namespace Addle.Core.Linq
 			public void OnNext(T value)
 			{
 				var observer = _observer.TryGetTarget();
-
-				if (observer != null)
-				{
-					observer.OnNext(value);
-				}
+				observer?.OnNext(value);
 			}
 		}
 
