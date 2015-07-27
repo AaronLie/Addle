@@ -10,6 +10,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 using Addle.Core.Linq;
 using Microsoft.CSharp;
 
@@ -134,6 +137,9 @@ namespace Addle.Wpf.ViewModel
 					"Microsoft.CSharp.dll",
 					"System.dll",
 					"System.Core.dll",
+					typeof(Freezable).Assembly.Location, // WindowsBase
+					typeof(Brushes).Assembly.Location, // PresentationCore
+					typeof(CommandConverter).Assembly.Location, // PresentationFramework
 					typeof(AutoVMFactory).Assembly.Location,
 					typeof(EnumerableExtensions).Assembly.Location,
 					typeof(AutoVMDesignTimeHelper).Assembly.Location,
