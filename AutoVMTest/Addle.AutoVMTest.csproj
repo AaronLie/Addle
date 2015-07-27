@@ -119,13 +119,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj">
+    <ProjectReference Include="..\Core\Addle.Core.csproj">
       <Project>{d916f4b4-0f30-433d-8534-41b80880c737}</Project>
-      <Name>Core</Name>
+      <Name>Addle.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Wpf\Wpf.csproj">
+    <ProjectReference Include="..\Wpf\Addle.Wpf.csproj">
       <Project>{65665deb-c1f3-46b2-93c4-b9de90f8ad22}</Project>
-      <Name>Wpf</Name>
+      <Name>Addle.Wpf</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
