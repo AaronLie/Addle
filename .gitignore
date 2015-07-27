@@ -2,9 +2,13 @@ library/
 temp/
 obj/
 bin/
-packages/
 *.ide/
 *.suo
 *.user
 *.userprefs
 *.orig
+
+# nuget stuff
+*.nupkg
+**/packages/*
+!**/packages/build/
