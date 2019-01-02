@@ -51,6 +51,19 @@ namespace Addle.Core.Linq
 		{
 			return @this.Any(a => a.IEquals(other));
 		}
+		
+		public static IOrderedEnumerable<KeyValuePair<K, V>> OrderByKey<K, V>(this IEnumerable<KeyValuePair<K, V>> list)
+        {
+            return list.OrderBy(a => a.Key);
+        }
+
+        public static IEnumerable<V> SelectValues<K, V>(this IEnumerable<KeyValuePair<K, V>> list)
+        {
+            foreach (var item in list)
+            {
+                yield return item.Value;
+            }
+        }
 	}
 
 	public static class EnumerableEx
