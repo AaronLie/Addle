@@ -83,8 +83,8 @@
     <Compile Include="Transactions\PropertyActionDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Rx-Main">
-      <Version>2.2.5</Version>
+    <PackageReference Include="System.Reactive">
+      <Version>4.1.2</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

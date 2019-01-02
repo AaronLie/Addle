@@ -118,11 +118,8 @@
     <PackageReference Include="Blend.Interactivity.Wpf">
       <Version>1.0.1340</Version>
     </PackageReference>
-    <PackageReference Include="Rx-WPF">
-      <Version>2.2.5</Version>
-    </PackageReference>
-    <PackageReference Include="Rx-XAML">
-      <Version>2.2.5</Version>
+    <PackageReference Include="System.Reactive">
+      <Version>4.1.2</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
